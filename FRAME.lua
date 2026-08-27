@@ -14,10 +14,21 @@ function Soda.Frame:childrenTouched(t,tpos)
   end
 end
 
+function Soda.Frame:bringToFront()
+  local siblings = self.parent and self.parent.child or Soda.items
+  for i, v in ipairs(siblings) do
+    if v == self then
+      table.remove(siblings, i)
+      break
+    end
+  end
+  table.insert(siblings, self)
+end
+
 function Soda.Frame:touched(t, tpos)
   if self.inactive then return end
   if self.sensor:touched(t, tpos) then return true end
-  return self.alert
+  return not self.hidden and (self.alert or self.modal)
 end
 
 function Soda.Frame:storeParameters(t)

@@ -30,9 +30,9 @@ function Soda.Scroll:verticalScroll(t,tpos)
 end
 
 function Soda.Scroll:touched(t, tpos)
-    if self.inactive then return end
-    if self.sensor:touched(t, tpos) then return true end
-    return self.alert
+  if self.inactive then return end
+  if self.sensor:touched(t, tpos) then return true end
+  return not self.hidden and (self.alert or self.modal)
 end
     
 function Soda.Scroll:updateScroll()

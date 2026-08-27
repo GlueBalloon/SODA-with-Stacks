@@ -1,7 +1,7 @@
 OverviewState = OverviewState or {}
 OverviewState.selectedtTab = OverviewState.selectedtTab or 1
 
---all "local" assignments for the overview function at once, to make it easier to read
+-- "local" assignments for the overview function, all at once, so that the structure of the Soda elements is easier to read
 local wS, tabs, win, winStack, content
 local aS, aboutTab, aboutSubPanel, demoSubPanel
 local bS, buttonTab, buttonSubPanel, presetButtonGrid, textButtonsGrid, segmentStack, extrasRow
@@ -10,8 +10,6 @@ local slS, sliderTab, sliderTabColumns, sliderColumn1, sliderColumn2, sliderColu
 local dS, dialogTab, dSubPanel1, dSubPanel2, dSubPanel3, dSubPanels
 local textEntryTab, scS, scrollTab
 local lS, listsTab, dropdownStack, numberedListLabel, numberedListDropdown, plainListLabel, plainListDropdown
-
-
 
 -- overview
 function overview()
@@ -855,12 +853,10 @@ function overview()
     enumerate = true,
     popupH = lS.dropdownPopupH,
     callback = function(this, selected, txt)
-      numberedListDropdown.button.title = "\u{25bc} A numbered list: "
-      numberedListDropdown.button:setPosition()
       numberedListLabel.content = "\""..txt.."\""
     end,
   }
-    
+  
   plainListLabel = Soda.Frame{
     dropdownStack,
     {nil, nil, nil, 24},
@@ -874,8 +870,6 @@ function overview()
     text = {"Dropdown", "lists", "are", "lists", "that", "dropdown", "from", "a", "button.", "Note", "that", "the", "button", "reports", "the", "selection", "made"},
     popupH = lS.dropdownPopupH,
     callback = function(this, selected, txt)
-      plainListDropdown.button.title = "\u{25bc} A dropdown list: "
-      plainListDropdown.button:setPosition()
       plainListLabel.content = "\""..txt.."\""
     end,
   }

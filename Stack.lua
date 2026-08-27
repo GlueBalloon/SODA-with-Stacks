@@ -182,9 +182,8 @@ end
 -- entry point (c): public, idempotent. Never calls self:orientationChanged()
 -- -- recursion runs downward only (into children), never back up into self.
 function Soda.Stack:layout()
-  -- snapshot each child's declared spec once, on first layout only.
   for i, child in ipairs(self.child) do
-    if not child.stackSpec then
+    if not child.stackSpec and not child.stackExclude then
       local p = child.parameters or {}
       child.stackSpec = {
         x = p.x, y = p.y, w = p.w, h = p.h,
@@ -214,41 +213,44 @@ function Soda.Stack:layout()
     crossContentFull = self.w - pad.left - pad.right
   end
   
-  local gapTotal = (n > 1) and (self.gap * (n - 1)) or 0
+  local includedCount = 0
+  for i, child in ipairs(self.child) do
+    if not child.stackExclude then includedCount = includedCount + 1 end
+  end
+  local gapTotal = (includedCount > 1) and (self.gap * (includedCount - 1)) or 0
   local availMain = mainContentFull - gapTotal
   if availMain < 0 then availMain = 0 end
   
-  -- classify each child's main-axis size: pixels / fraction / flex.
   local mode, mainSizePx, flexWeight = {}, {}, {}
   local pixelTotal, fractionTotal, flexWeightTotal = 0, 0, 0
   for i, child in ipairs(self.child) do
-    local spec = child.stackSpec
-    local v = spec[mainKey]
-    if v == nil or spec.flex ~= nil then
-      mode[i] = "flex"
-      flexWeight[i] = spec.flex or 1
-      flexWeightTotal = flexWeightTotal + flexWeight[i]
-    elseif v > 1 then
-      mode[i] = "px"
-      mainSizePx[i] = v
-      pixelTotal = pixelTotal + v
-    elseif v > 0 then
-      mode[i] = "frac"
-      mainSizePx[i] = v * availMain
-      fractionTotal = fractionTotal + mainSizePx[i]
-    else
-      -- v <= 0: negative sizes are unsupported per spec; degrade to flex
-      -- rather than erroring.
-      mode[i] = "flex"
-      flexWeight[i] = spec.flex or 1
-      flexWeightTotal = flexWeightTotal + flexWeight[i]
+    if not child.stackExclude then
+      local spec = child.stackSpec
+      local v = spec[mainKey]
+      if v == nil or spec.flex ~= nil then
+        mode[i] = "flex"
+        flexWeight[i] = spec.flex or 1
+        flexWeightTotal = flexWeightTotal + flexWeight[i]
+      elseif v > 1 then
+        mode[i] = "px"
+        mainSizePx[i] = v
+        pixelTotal = pixelTotal + v
+      elseif v > 0 then
+        mode[i] = "frac"
+        mainSizePx[i] = v * availMain
+        fractionTotal = fractionTotal + mainSizePx[i]
+      else
+        mode[i] = "flex"
+        flexWeight[i] = spec.flex or 1
+        flexWeightTotal = flexWeightTotal + flexWeight[i]
+      end
     end
   end
   
   local leftover = availMain - pixelTotal - fractionTotal
   if leftover < 0 then leftover = 0 end
-  for i = 1, n do
-    if mode[i] == "flex" then
+  for i, child in ipairs(self.child) do
+    if not child.stackExclude and mode[i] == "flex" then
       if flexWeightTotal > 0 then
         mainSizePx[i] = leftover * (flexWeight[i] / flexWeightTotal)
       else
@@ -258,57 +260,52 @@ function Soda.Stack:layout()
   end
   local anyFlexible = flexWeightTotal > 0
   
-  -- cross-axis intended size per child.
   local crossSizePx = {}
   for i, child in ipairs(self.child) do
-    local spec = child.stackSpec
-    local a = spec.selfAlign or self.align
-    if a == "fill" then
-      crossSizePx[i] = crossContentFull
-    else
-      local cv = spec[crossKey]
-      if cv == nil then
-        crossSizePx[i] = crossContentFull -- fallback: behaves like fill
-      elseif cv > 1 then
-        crossSizePx[i] = cv
-      elseif cv > 0 then
-        crossSizePx[i] = cv * crossContentFull
-      else
+    if not child.stackExclude then
+      local spec = child.stackSpec
+      local a = spec.selfAlign or self.align
+      if a == "fill" then
         crossSizePx[i] = crossContentFull
+      else
+        local cv = spec[crossKey]
+        if cv == nil then
+          crossSizePx[i] = crossContentFull
+        elseif cv > 1 then
+          crossSizePx[i] = cv
+        elseif cv > 0 then
+          crossSizePx[i] = cv * crossContentFull
+        else
+          crossSizePx[i] = crossContentFull
+        end
       end
     end
   end
   
-  -- PASS 1: write intended sizes, resize (or just position) each child,
-  -- then read back the actual w/h. NB: for a plain Soda.Stack child this
-  -- read-back is a no-op in practice -- Slider/Switch compute their own
-  -- geometry into `t` BEFORE calling Frame.init, so storeParameters (and
-  -- therefore stackSpec) already snapshots the true self-sized value, and
-  -- setPosition() here just returns what was asked for. The read-back is
-  -- kept because Grid's `fit = "natural"` genuinely needs it (a child
-  -- there is never told a size at all), and because it costs nothing.
   local actualMain, actualCross = {}, {}
   for i, child in ipairs(self.child) do
-    local wantMain = pxSize(mainSizePx[i])
-    local wantCross = pxSize(crossSizePx[i])
-    local p = child.parameters
-    local sizeChanged = (p[mainKey] ~= wantMain) or (p[crossKey] ~= wantCross)
-    p[mainKey] = wantMain
-    p[crossKey] = wantCross
-    if sizeChanged then
-      child:orientationChanged()
-    else
-      child:setPosition()
+    if not child.stackExclude then
+      local wantMain = pxSize(mainSizePx[i])
+      local wantCross = pxSize(crossSizePx[i])
+      local p = child.parameters
+      local sizeChanged = (p[mainKey] ~= wantMain) or (p[crossKey] ~= wantCross)
+      p[mainKey] = wantMain
+      p[crossKey] = wantCross
+      if sizeChanged then
+        child:orientationChanged()
+      else
+        child:setPosition()
+      end
+      actualMain[i] = child[mainKey]
+      actualCross[i] = child[crossKey]
     end
-    actualMain[i] = child[mainKey]
-    actualCross[i] = child[crossKey]
   end
   
-  -- PASS 2: advance the cursor and apply cross-alignment from the ACTUAL
-  -- values, then write positions and setPosition() again (idempotent).
   local actualMainTotal = 0
-  for i = 1, n do actualMainTotal = actualMainTotal + actualMain[i] end
-  local actualGapTotal = (n > 1) and (self.gap * (n - 1)) or 0
+  for i, child in ipairs(self.child) do
+    if not child.stackExclude then actualMainTotal = actualMainTotal + actualMain[i] end
+  end
+  local actualGapTotal = (includedCount > 1) and (self.gap * (includedCount - 1)) or 0
   local extra = mainContentFull - actualMainTotal - actualGapTotal
   if extra < 0 then extra = 0 end
   
@@ -318,43 +315,39 @@ function Soda.Stack:layout()
       cursor = extra * 0.5
     elseif self.justify == "end" then
       cursor = extra
-    elseif self.justify == "between" and n > 1 then
-      stepGap = self.gap + extra / (n - 1)
+    elseif self.justify == "between" and includedCount > 1 then
+      stepGap = self.gap + extra / (includedCount - 1)
     end
-    -- "start" (default): cursor = 0, stepGap = self.gap, unchanged.
   end
   
   for i, child in ipairs(self.child) do
-    local size = actualMain[i]
-    local locMain
-    if self.dir == "v" then
-      -- VStack fills top-to-bottom: cursor tracks distance consumed
-      -- from the TOP of the content box downward; convert to Soda's
-      -- bottom-up loc convention.
-      locMain = pad.bottom + mainContentFull - cursor - size
-    else
-      -- HStack fills left-to-right: cursor already matches Soda's
-      -- left-up loc convention directly.
-      locMain = pad.left + cursor
+    if not child.stackExclude then
+      local size = actualMain[i]
+      local locMain
+      if self.dir == "v" then
+        locMain = pad.bottom + mainContentFull - cursor - size
+      else
+        locMain = pad.left + cursor
+      end
+      cursor = cursor + size + stepGap
+      
+      local spec = child.stackSpec
+      local a = spec.selfAlign or self.align
+      local cSize = actualCross[i]
+      local crossNear = (self.dir == "v") and pad.left or pad.bottom
+      local locCross
+      if a == "center" then
+        locCross = crossNear + (crossContentFull - cSize) * 0.5
+      elseif a == "end" then
+        locCross = crossNear + (crossContentFull - cSize)
+      else
+        locCross = crossNear
+      end
+      
+      child.parameters[mainPos] = pxPos(locMain)
+      child.parameters[crossPos] = pxPos(locCross)
+      child:setPosition()
     end
-    cursor = cursor + size + stepGap
-    
-    local spec = child.stackSpec
-    local a = spec.selfAlign or self.align
-    local cSize = actualCross[i]
-    local crossNear = (self.dir == "v") and pad.left or pad.bottom
-    local locCross
-    if a == "center" then
-      locCross = crossNear + (crossContentFull - cSize) * 0.5
-    elseif a == "end" then
-      locCross = crossNear + (crossContentFull - cSize)
-    else -- "fill" or "start"
-      locCross = crossNear
-    end
-    
-    child.parameters[mainPos] = pxPos(locMain)
-    child.parameters[crossPos] = pxPos(locCross)
-    child:setPosition()
   end
   
   self.stackDirty = false

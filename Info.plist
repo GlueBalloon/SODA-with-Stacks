@@ -7,7 +7,7 @@
 	<key>Buffer Order</key>
 	<array>
 		<string>Main.lua</string>
-		<string>Demo.lua</string>
+		<string>calculator.lua</string>
 		<string>Layout.lua</string>
 		<string>Soda.lua</string>
 		<string>FRAME.lua</string>
@@ -32,6 +32,53 @@
 		<string>Stack.lua</string>
 		<string>Overview.lua</string>
 		<string>Sugar.lua</string>
+		<string>.git/</string>
+		<string>.git/logs/</string>
+		<string>.git/logs/refs/</string>
+		<string>.git/logs/refs/heads/</string>
+		<string>.git/logs/refs/remotes/</string>
+		<string>.git/logs/refs/remotes/origin/</string>
+		<string>.git/objects/</string>
+		<string>.git/objects/31/</string>
+		<string>.git/objects/d0/</string>
+		<string>.git/objects/09/</string>
+		<string>.git/objects/5d/</string>
+		<string>.git/objects/4d/</string>
+		<string>.git/objects/a3/</string>
+		<string>.git/objects/21/</string>
+		<string>.git/objects/18/</string>
+		<string>.git/objects/f0/</string>
+		<string>.git/objects/5c/</string>
+		<string>.git/objects/ff/</string>
+		<string>.git/objects/61/</string>
+		<string>.git/objects/89/</string>
+		<string>.git/objects/37/</string>
+		<string>.git/objects/ee/</string>
+		<string>.git/objects/ce/</string>
+		<string>.git/objects/ef/</string>
+		<string>.git/objects/eb/</string>
+		<string>.git/objects/c6/</string>
+		<string>.git/objects/30/</string>
+		<string>.git/objects/e6/</string>
+		<string>.git/objects/8b/</string>
+		<string>.git/objects/71/</string>
+		<string>.git/objects/00/</string>
+		<string>.git/objects/11/</string>
+		<string>.git/objects/3c/</string>
+		<string>.git/objects/ab/</string>
+		<string>.git/objects/pack/</string>
+		<string>.git/objects/bd/</string>
+		<string>.git/objects/15/</string>
+		<string>.git/objects/info/</string>
+		<string>.git/objects/22/</string>
+		<string>.git/objects/9e/</string>
+		<string>.git/hooks/</string>
+		<string>.git/info/</string>
+		<string>.git/refs/</string>
+		<string>.git/refs/remotes/</string>
+		<string>.git/refs/remotes/origin/</string>
+		<string>.git/refs/tags/</string>
+		<string>.git/refs/heads/</string>
 	</array>
 	<key>Created</key>
 	<string>2015-10-28 08:31:01 +0000</string>
