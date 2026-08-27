@@ -1,7 +1,8 @@
+--# Overview
 OverviewState = OverviewState or {}
 OverviewState.selectedtTab = OverviewState.selectedtTab or 1
 
--- "local" assignments for the overview function, all at once, so that the structure of the Soda elements is easier to read
+--all "local" assignments for the overview function at once, to make it easier to read
 local wS, tabs, win, winStack, content
 local aS, aboutTab, aboutSubPanel, demoSubPanel
 local bS, buttonTab, buttonSubPanel, presetButtonGrid, textButtonsGrid, segmentStack, extrasRow
@@ -9,7 +10,9 @@ local swS, switchTab, switchRow, switchesPanel, switchContainer, switchStack1, s
 local slS, sliderTab, sliderTabColumns, sliderColumn1, sliderColumn2, sliderColumnSet, sliderStack1, sliderStack2, sliderStack3, sliderStack4
 local dS, dialogTab, dSubPanel1, dSubPanel2, dSubPanel3, dSubPanels
 local textEntryTab, scS, scrollTab
-local lS, listsTab, dropdownStack, numberedListLabel, numberedListDropdown, plainListLabel, plainListDropdown
+local lS, listsTab, dropdownStack, numberedListDropdown, plainListDropdown
+
+
 
 -- overview
 function overview()
@@ -839,12 +842,6 @@ function overview()
     padTop = lS.dropdownStackPadTop,
   }
   
-  numberedListLabel = Soda.Frame{
-    dropdownStack,
-    {nil, nil, nil, 24},
-    content = "(no selection)",
-  }
-  
   numberedListDropdown = Soda.DropdownList{
     dropdownStack,
     {nil, nil, nil, 40},
@@ -852,15 +849,6 @@ function overview()
     text = {"Lists", "and", "dropdown lists", "can", "be", "automatically", "enumerated", "if", "you", "wish"},
     enumerate = true,
     popupH = lS.dropdownPopupH,
-    callback = function(this, selected, txt)
-      numberedListLabel.content = "\""..txt.."\""
-    end,
-  }
-  
-  plainListLabel = Soda.Frame{
-    dropdownStack,
-    {nil, nil, nil, 24},
-    content = "(no selection)",
   }
   
   plainListDropdown = Soda.DropdownList{
@@ -869,9 +857,6 @@ function overview()
     title = "A dropdown list",
     text = {"Dropdown", "lists", "are", "lists", "that", "dropdown", "from", "a", "button.", "Note", "that", "the", "button", "reports", "the", "selection", "made"},
     popupH = lS.dropdownPopupH,
-    callback = function(this, selected, txt)
-      plainListLabel.content = "\""..txt.."\""
-    end,
   }
   
   tabs[7] = listsTab
@@ -1245,13 +1230,13 @@ function listsTabSettings(windowSettings)
   lS.listH = math.min(maxVisibleH, availH)
   
   -- pushes the dropdown group down from the title band so the first
-  -- "(no selection)" text isn't sitting right up against it.
+  -- dropdown isn't sitting right up against it.
   lS.dropdownStackPadTop = 12
   
   lS.dropdownPopupH = windowSettings.contentH
   
-  local groupH = 24 + 8 + 40  -- label + gap + dropdown
-  lS.dropdownStackH = lS.dropdownStackPadTop + 2*groupH + 8  -- +8 gap between the two groups
+  local groupH = 40 -- just the dropdown itself, no label above it anymore
+  lS.dropdownStackH = lS.dropdownStackPadTop + 2*groupH + 8  -- +8 gap between the two dropdowns
   return lS
 end
 
@@ -1268,6 +1253,3 @@ function scrollTabSettings(windowSettings)
   scS.innerH = -(Layout.titleBand() * titleLines + 4)
   return scS
 end
-
-
-

@@ -1,5 +1,5 @@
---# Sugar
--- Sugar: single-table constructors for Soda elements.
+--# Standardizer
+-- Standardizer: single-table constructors for Soda elements.
 --
 -- Usage:
 --   Soda.Window{ nil, {0.5, 0.5, 300, 200}, title = "Test", blurred = true }
@@ -180,21 +180,21 @@ local function parseGeom(geom)
 end
 
 -- Soda.args converts { parent, geom, named... } to { parent = parent, x = x, ... }
-function Soda.args(sigName, sugarTable)
-  if sugarTable == nil then return {} end
-  if type(sugarTable) ~= "table" then
-    error("Soda.args: expected a table, got " .. type(sugarTable))
+function Soda.args(sigName, standardizerTable)
+  if standardizerTable == nil then return {} end
+  if type(standardizerTable) ~= "table" then
+    error("Soda.args: expected a table, got " .. type(standardizerTable))
   end
   
   -- If it already has x,y,w,h keys, it's already in named format
-  if sugarTable.x ~= nil or sugarTable.y ~= nil or sugarTable.w ~= nil or sugarTable.h ~= nil then
-    return sugarTable
+  if standardizerTable.x ~= nil or standardizerTable.y ~= nil or standardizerTable.w ~= nil or standardizerTable.h ~= nil then
+    return standardizerTable
   end
   
   local out = {}
   
   -- Position 1: parent
-  local parent = sugarTable[1]
+  local parent = standardizerTable[1]
   if parent ~= nil then
     if not isSodaInstance(parent) then
       error("Soda.args: position 1 (parent) must be a Soda instance or nil, got " .. type(parent))
@@ -203,7 +203,7 @@ function Soda.args(sigName, sugarTable)
   end
   
   -- Position 2: geometry
-  local geom = sugarTable[2]
+  local geom = standardizerTable[2]
   if geom ~= nil then
     if type(geom) ~= "table" then
       error("Soda.args: position 2 (geometry) must be a table or nil, got " .. type(geom))
@@ -215,7 +215,7 @@ function Soda.args(sigName, sugarTable)
   end
   
   -- All string keys (skip numeric positions 1 and 2)
-  for k, v in pairs(sugarTable) do
+  for k, v in pairs(standardizerTable) do
     if type(k) == "string" then
       out[k] = v
     end
@@ -237,8 +237,8 @@ end
 -- { parent, geom, named... } to { parent = parent, x = x, ... }
 local function patch(cls, sigName)
   local old = cls.init
-  cls.init = function(self, sugarTable)
-    local args = Soda.args(sigName, sugarTable)
+  cls.init = function(self, standardizerTable)
+    local args = Soda.args(sigName, standardizerTable)
     applyPreset(args)
     applyStyleAdd(args)
     local effStyle = args.style or (args.parent and args.parent.style) or Soda.style.default
@@ -270,18 +270,18 @@ patch(Soda.Grid, "Grid")
 local oldVStack = Soda.VStack
 local oldHStack = Soda.HStack
 
-Soda.VStack = function(sugarTable)
-  return oldVStack(Soda.args("VStack", sugarTable))
+Soda.VStack = function(standardizerTable)
+  return oldVStack(Soda.args("VStack", standardizerTable))
 end
 
-Soda.HStack = function(sugarTable)
-  return oldHStack(Soda.args("HStack", sugarTable))
+Soda.HStack = function(standardizerTable)
+  return oldHStack(Soda.args("HStack", standardizerTable))
 end
 
 local function wrapFactory(name, sigName)
   local old = Soda[name]
-  Soda[name] = function(sugarTable)
-    return old(Soda.args(sigName, sugarTable))
+  Soda[name] = function(standardizerTable)
+    return old(Soda.args(sigName, standardizerTable))
   end
 end
 
@@ -298,8 +298,8 @@ end
 
 local oldSegmentInit = Soda.Segment.init
 
-Soda.Segment.init = function(self, sugarTable)
-  local t = Soda.args("Segment", sugarTable)
+Soda.Segment.init = function(self, standardizerTable)
+  local t = Soda.args("Segment", standardizerTable)
   if t.rows and t.rows > 1 then
     Soda.Segment.buildRows(self, t)
   else
