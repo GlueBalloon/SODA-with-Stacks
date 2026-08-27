@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>Unknown</string>
+	<key>Buffer Order</key>
+	<array>
+		<string>Main.lua</string>
+		<string>Demo.lua</string>
+		<string>Layout.lua</string>
+		<string>Soda.lua</string>
+		<string>FRAME.lua</string>
+		<string>Gesture.lua</string>
+		<string>Style.lua</string>
+		<string>RoundRect.lua</string>
+		<string>Blur.lua</string>
+		<string>Button.lua</string>
+		<string>Toggle.lua</string>
+		<string>Switch.lua</string>
+		<string>TextEntry.lua</string>
+		<string>Slider.lua</string>
+		<string>Selector.lua</string>
+		<string>Segment.lua</string>
+		<string>Scroll.lua</string>
+		<string>ScrollShape.lua</string>
+		<string>TextScroll.lua</string>
+		<string>List.lua</string>
+		<string>Windows.lua</string>
+		<string>Scratch.lua</string>
+		<string>ColorWheel.lua</string>
+		<string>Stack.lua</string>
+		<string>Overview.lua</string>
+		<string>Sugar.lua</string>
+	</array>
+	<key>Created</key>
+	<string>2015-10-28 08:31:01 +0000</string>
+	<key>Description</key>
+	<string>Soda v0.7</string>
+	<key>ProjectID</key>
+	<string>161305D5-C7F3-40D1-A106-3D2E102FE209</string>
+</dict>
+</plist>
