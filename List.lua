@@ -154,12 +154,12 @@ function Soda.DropdownList:buildList()
         panels = self.panels,
         default = self.selectedDefault,
         enumerate = self.enumerate,
-        callback = function(this, selected, txt)
+        callback = function(selected, txt)          -- List is a Frame, so this is already self-stripped
             self.button.title = txt
             self.button:setPosition()
-            this:hide()
-            this.modal = false
-            callback(this, selected, txt)
+            self.list:hide()                          -- use the reference we already have
+            self.list.modal = false
+            callback(selected, txt)                   -- forward to the end user, self-free
         end
     }
     

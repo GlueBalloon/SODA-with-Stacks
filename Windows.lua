@@ -1,3 +1,4 @@
+--# Windows
 --factories for various window types
 
 --difference between dialog and window
@@ -20,7 +21,14 @@ function Soda.Window:init(t)
         if type(t.ok)=="string" then title = t.ok end
         Soda.Button{parent = self, title = title, x = -10, y = 10, w = 0.3, h = 40, 
             callback = function() 
-                if callback() then self:closeAction() end
+                -- self:callback() invokes Frame's own already-wrapped,
+                -- self-stripped callback (see FRAME.lua). Previously this
+                -- referenced a bare local `callback` that had been
+                -- dropped from this function, so tapping OK on any Window
+                -- built with ok=true threw "attempt to call a nil value
+                -- (global 'callback')". Using self:callback() here avoids
+                -- needing to reintroduce that separate local at all.
+                if self:callback() then self:closeAction() end
             end} --style = Soda.style.transparent,blurred = t.blurred,
     end
     
@@ -102,6 +110,20 @@ function Soda.TextWindow:clearString()
 end
 
 function Soda.Alert2(t)
+    -- Alert2/Alert are plain factory functions, not classes, so they
+    -- never go through Standardizer's patch() wrapper the way
+    -- Soda.Frame/Button/Window etc. do. Left untranslated, the very next
+    -- line (t.h = t.h or 0.25) sets t.h directly on a table that may
+    -- still be holding its real geometry in positional form (t[2] =
+    -- {nil,nil,w,h}) -- and once t.h is non-nil, Soda.args's own
+    -- "already translated?" check short-circuits and returns the table
+    -- as-is, so the real w/h packed into t[2] are never unpacked. On
+    -- phone this meant every Alert2 call using the demo's positional
+    -- syntax rendered full-width at a flat 25% height regardless of
+    -- Layout.dialogW()/dialogH(). Translating here, before any of this
+    -- function's own defaulting runs, fixes that. It's a safe no-op for
+    -- callers already using named keys (see Windows-tab discussion).
+    t = Soda.args("Alert2", t)
     t.shape = t.shape or Soda.RoundedRectangle
     t.shapeArgs = t.shapeArgs or {}
     t.shapeArgs.radius = 25
@@ -139,6 +161,8 @@ end
 Soda.Confirm = Soda.Alert2
 
 function Soda.Alert(t)
+    -- same fix, same reasoning as Soda.Alert2 above.
+    t = Soda.args("Alert", t)
     t.shape = t.shape or Soda.RoundedRectangle
     t.shapeArgs = t.shapeArgs or {}
     t.shapeArgs.radius = 25

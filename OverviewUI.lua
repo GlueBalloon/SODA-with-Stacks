@@ -67,10 +67,12 @@ function overview()
         rows = wS.isPortrait and 2 or nil,
         rowGap = wS.isPortrait and 8 or nil,
         default = OverviewState.selectedtTab,
-        callback = wS.isPortrait and function(subself, selected, title, globalIdx)
-            if globalIdx then showSegmented(globalIdx, tabs) end
-        end or function(self, selected)
-            if selected and selected.idNo then showSegmented(selected.idNo, tabs) end
+        callback = function(selected, title, globalIdx)
+            if globalIdx then
+                showSegmented(globalIdx, tabs)
+            elseif selected and selected.idNo then
+                showSegmented(selected.idNo, tabs)
+            end
         end,
     }
     

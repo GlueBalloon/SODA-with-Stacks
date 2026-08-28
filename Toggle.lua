@@ -17,14 +17,11 @@ function Soda.Toggle:toggleMe()
 end
 
 function Soda.Toggle:toggleSettings(t)
-    self.on = t.on or false    
-    self.callback = t.callback or null
-    self.callbackOff = t.callbackOff or null
-    if self.on then 
-        self:switchOn() 
-    else
-        self:switchOff()
-    end
+    self.on = t.on or false
+    local userCB, userOffCB = t.callback, t.callbackOff
+    self.callback = userCB and function(_, ...) return userCB(...) end or null
+    self.callbackOff = userOffCB and function(_, ...) return userOffCB(...) end or null
+    if self.on then self:switchOn() else self:switchOff() end
 end
 
 function Soda.Toggle:switchOn()

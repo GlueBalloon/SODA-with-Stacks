@@ -1,3 +1,4 @@
+--# Soda
 Soda = Soda or {}
 Soda.version = "0.7.4"
 SodaIsInstalled = true
@@ -53,10 +54,27 @@ function Soda.camera()
     translate(0, Soda.UIoffset)
 end
 
+-- called just before a killed element is dropped from its owner's list
+-- (Soda.items here, or a parent Frame's self.child in FRAME.lua). Gives
+-- any mesh component the element owns (eg Soda.Blur) a chance to
+-- deregister itself from a global registry it joined at construction --
+-- Soda.Blur.active is append-only and has no other removal path, so
+-- without this hook it grows forever across repeated create/kill cycles
+-- of blurred elements. Mesh components that don't need cleanup (Shadow,
+-- Gaussian) simply have no :destroyed() method and are skipped.
+function Soda.destroyElement(v)
+    if v.mesh then
+        for _, m in ipairs(v.mesh) do
+            if m.destroyed then m:destroyed() end
+        end
+    end
+end
+
 function Soda.drawElements(breakPoint)
     Soda.setStyle(Soda.style.default.text)
     for i,v in ipairs(Soda.items) do --draw most recent item last
         if v.kill then
+            Soda.destroyElement(v)
             table.remove(Soda.items, i)
         else
             if v:draw(breakPoint) then return end

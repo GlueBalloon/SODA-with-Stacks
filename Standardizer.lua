@@ -350,16 +350,16 @@ function Soda.Segment.buildRows(self, t)
             subStyle = t.subStyle,
             noSelectionPossible = t.noSelectionPossible,
             default = (defaultRow == r) and defaultCol or 0,
-            callback = function(subself, selectedChild, title)
+            callback = function(selectedChild, title)
                 for _, other in ipairs(self.rowStrips) do
-                    if other ~= subself and other.selected then
+                    if other ~= strip and other.selected then
                         other.selected.highlighted = false
                         if other.selected.panel then other.selected.panel:hide() end
                         other.selected = nil
                     end
                 end
-                local globalIdx = (subself.rowNo - 1) * perRow + selectedChild.idNo
-                if t.callback then t.callback(subself, selectedChild, title, globalIdx) end
+                local globalIdx = (strip.rowNo - 1) * perRow + selectedChild.idNo
+                if t.callback then t.callback(selectedChild, title, globalIdx) end
             end,
         }
         strip.rowNo = r

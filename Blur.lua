@@ -1,3 +1,4 @@
+--# Blur
 Soda.Gaussian = class() --a component for nice effects like shadows and blur
 --Gaussian blur
 --adapted by Yojimbo2000 from http://xissburg.com/faster-gaussian-blur-in-glsl/ 
@@ -88,6 +89,20 @@ function Soda.Blur:init(t)
     -- construction-time bake paints a centred, un-laid-out frame straight
     -- onto the framebuffer. First draw() bakes instead, by which point
     -- layout has run.
+end
+
+-- called by Soda.destroyElement (Soda.lua) when the Frame that owns this
+-- Blur is killed and about to be dropped from its parent's child list --
+-- removes this instance from the append-only Soda.Blur.active registry,
+-- which otherwise has no way to shrink and leaks one entry per blurred
+-- element ever destroyed over the app's lifetime.
+function Soda.Blur:destroyed()
+    for i, b in ipairs(Soda.Blur.active) do
+        if b == self then
+            table.remove(Soda.Blur.active, i)
+            break
+        end
+    end
 end
 
 -- mark every live blur for a rebake on its next draw.

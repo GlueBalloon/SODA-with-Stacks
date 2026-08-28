@@ -1,3 +1,4 @@
+--# calculator
 --# Demo
 -- calculator demo. demo1() (the old panel/menu showcase) was dead code,
 -- never called from setup() or overview() - removed rather than adapted,
@@ -40,29 +41,37 @@ function calculator.init()
         style = {shape = {}, text = {fontSize = 0.9, font = "HelveticaNeue", fill = color(59, 240), textWrapWidth = 340}}
     }
     
-    local function onPress(sender)
-        local inkey = sender.title
-        if inkey:find("%d") then
-            if display.title == "0" or result then
-                display.title = inkey
-                result = false
+    -- digitPress replaces the old onPress(sender) shared handler. onPress
+    -- relied on Soda's self-first callback convention (sender = the button
+    -- that fired) to disambiguate which of the 14 digit/operator buttons was
+    -- pressed. Now that Frame:init strips self before forwarding to user
+    -- callbacks, that identity is no longer available as a parameter -- so
+    -- each button gets its own tiny closure over its own key instead of
+    -- asking "who called me" at runtime.
+    local function digitPress(inkey)
+        return function()
+            if inkey:find("%d") then
+                if display.title == "0" or result then
+                    display.title = inkey
+                    result = false
+                else
+                    display.title = display.title..inkey
+                end
+                
+            elseif inkey == "." then
+                if not result and display.title:find("%d$") and not display.title:find("%.%d-$") then
+                    result = false
+                    display.title = display.title..inkey
+                end
+                
             else
-                display.title = display.title..inkey
+                if display.title ~= "0" and display.title:find("%d$") then
+                    result = false
+                    display.title = display.title..inkey
+                end
             end
-            
-        elseif inkey == "." then
-            if not result and display.title:find("%d$") and not display.title:find("%.%d-$") then
-                result = false
-                display.title = display.title..inkey
-            end
-            
-        else
-            if display.title ~= "0" and display.title:find("%d$") then
-                result = false
-                display.title = display.title..inkey
-            end
+            display:setPosition()
         end
-        display:setPosition()
     end
     
     local buttonStyle2 = {
@@ -81,7 +90,7 @@ function calculator.init()
         title = "0",
         subStyle = {"icon"},
         shapeArgs = {radius = 25, corners = 1},
-        callback = onPress
+        callback = digitPress("0")
     }
     
     Soda.Button{
@@ -91,31 +100,33 @@ function calculator.init()
         title = ".",
         subStyle = {"icon"},
         shapeArgs = {corners = 0},
-        callback = onPress
+        callback = digitPress(".")
     }
     
     for n = 0,8 do
+        local digit = tostring(n+1)
         Soda.Button{
             parent = calculator.window,
             w = s, h = s,
             x = s * (n%3), y = s * (1 + n//3),
-            title = tostring(n+1),
+            title = digit,
             subStyle = {"icon"},
             shapeArgs = {corners = 0},
-            callback = onPress
+            callback = digitPress(digit)
         }
     end
     local buttons = {"\u{00F7}", "\u{00D7}", "-", "+"}
     
     for n = 0,3 do
+        local op = buttons[n+1]
         Soda.Button{
             parent = calculator.window,
             w = s, h = s,
             x = s * 3, y = s * n,
-            title = buttons[n+1],
+            title = op,
             style = buttonStyle2,
             shapeArgs = {corners = 0},
-            callback = onPress
+            callback = digitPress(op)
         }
     end
     

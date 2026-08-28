@@ -1,4 +1,3 @@
---# FRAME
 Soda.Frame = class() --the master class for all UI elements. 
 
 function Soda.Frame:setInactive(b)
@@ -36,11 +35,21 @@ function Soda.Frame:storeParameters(t)
     for k,v in pairs(t) do
         
         if k =="label" or k=="shapeArgs" then
-            self[k] = {}
-            self.parameters[k] = {}
-            for a,b in pairs(v) do
-                self[k][a] = b
-                self.parameters[k][a] = b
+            -- v can legitimately be false (an explicit "no label" sentinel
+            -- from a caller, eg Soda.Frame{ ..., label = false }) rather
+            -- than a table or nil. pairs(false) crashes, so only walk it
+            -- as a table when it actually is one -- anything falsy just
+            -- leaves self[k]/self.parameters[k] unset, which every
+            -- downstream reader (Frame:draw's `if self.label then`,
+            -- Frame:setPosition's `if t.label then`) already treats
+            -- correctly as "no label"/"no shapeArgs".
+            if v then
+                self[k] = {}
+                self.parameters[k] = {}
+                for a,b in pairs(v) do
+                    self[k][a] = b
+                    self.parameters[k][a] = b
+                end
             end
         else
             self.parameters[k] = v
@@ -219,6 +228,7 @@ function Soda.Frame:draw(breakPoint)
     for i, v in ipairs(self.child) do --nb children are drawn with parent's transformation
         
         if v.kill then
+            Soda.destroyElement(v)
             table.remove(self.child, i)
         else
             if v:draw(breakPoint) then return true end
@@ -295,7 +305,8 @@ function Soda.Frame:init(t)
     end
     self:storeParameters(t)
     
-    self.callback = t.callback or null --triggered on action completion
+    local userCB = t.callback
+    self.callback = userCB and function(_, ...) return userCB(...) end or null
     self.update = t.update or null --triggered every draw cycle.
     
     --null = function() end. ie no need to test if callback then callback()
