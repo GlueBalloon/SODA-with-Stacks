@@ -128,14 +128,16 @@ for k,v in pairs(Soda.symbol) do
 end
 
 function Soda.setStyle(sty)
+    if not sty then return end
     for k,v in pairs(sty) do
-        if type(v)=="string" and Soda.theme[v] then
-            Soda[k](Soda.theme[v])
-        else
-            local ok, err = xpcall(function() Soda[k](v) end, function(trace) return debug.traceback(trace) end) 
-            if not ok then print(err) end
-            --   Soda[k](v)
-        end
+        local ok, err = xpcall(function()
+            if type(v)=="string" and Soda.theme[v] then
+                Soda[k](Soda.theme[v])
+            else
+                Soda[k](v)
+            end
+        end, function(trace) return debug.traceback(trace) end)
+        if not ok then print(err) end
     end
 end
 

@@ -1,20 +1,20 @@
 Soda.Slider = class(Soda.Frame)
 
 function Soda.Slider:init(t)
-    --  t.shape = Soda.line
     t.w = t.w or 300
     t.h = 60
     t.style = Soda.style.switch
     self.range = t.max - t.min
-    self.value = t.start or t.min
-    self.value = clamp(self.value, t.min, t.max)
+    self.value = clamp(t.start or t.min, t.min, t.max)
     self.decimalPlaces = t.decimalPlaces or 0
     
-    t.label = {x = 0, y = -0.001}
-    --  t.shapeArgs = {x = 0, y = 20, h = 0}
+    if not t.label and t.title then
+        t.label = {x = 0, y = -0.001}
+    end
     self.snapPoints = t.snapPoints or {}
     self.snapPos = {}
     Soda.Frame.init(self, t)
+    
     
     self.knob = Soda.SliderKnob{
         parent = self, 

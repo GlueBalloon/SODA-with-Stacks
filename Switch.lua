@@ -1,20 +1,20 @@
 Soda.Switch = class(Soda.Toggle) --an iOS-style switch with a lever that moves back and forth
 
 function Soda.Switch:init(t)
-    
     local tw,_ = textSize(t.title or "")
-    -- t.w, t.h = 120+tw,40
-    
+    local lbl = t.label
+    if not lbl and t.title then
+        lbl = {x=80, y=0.5}
+    end
     Soda.Frame.init(self, {
-        parent = t.parent, 
-        x = t.x, y=t.y, w = 120+tw, h = 40, 
-        on = t.on or false, 
-        -- style = t.style or Soda.style.switch, 
+        parent = t.parent,
+        x = t.x, y=t.y, w = 120+tw, h = 40,
+        on = t.on or false,
         subStyle = {"switch"},
-        shape = Soda.RoundedRectangle, 
-        shapeArgs = {w = 70, h = 36, radius = 18, x = 0, y = 2}, 
-        highlightable = true, 
-        label = {x=80, y=0.5} , title = t.title
+        shape = Soda.RoundedRectangle,
+        shapeArgs = {w = 70, h = 36, radius = 18, x = 0, y = 2},
+        highlightable = true,
+        label = lbl, title = t.title
     })
     
     self.knob = Soda.Knob{parent = self, x = 0, y = 0.5, w=38, h=38, shape = Soda.ellipse, shadow = true}

@@ -210,12 +210,8 @@ function Soda.Frame:draw(breakPoint)
         titleText = "title"
     end
     if self.label then
-        
-        --  Soda.setStyle(sty.text) --(Soda.style.default.text)
         self:setStyle(sty, titleText, "text")
-        
-        text(self.title, self.label.x, self.label.y)
-        
+        text(self.title or "", self.label.x, self.label.y)
     end
     
     popStyle()

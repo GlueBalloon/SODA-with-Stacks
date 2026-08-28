@@ -40,12 +40,16 @@ Soda.TextEntry = TextEntry
 -- TextEntry itself is doing nothing but displaying the text, text edition is inside TextEditor
 function TextEntry:init(t)
     t.shape = Soda.RoundedRectangle
-    t.label = {x=10, y=0.5} 
+    if not t.label and t.title then
+        t.label = {x=10, y=0.5}
+    end
     Soda.Frame.init(self, t)
     table.insert(self.styleList, 2, self.style["button"])
     self:inputString(t.default or "")
     self:updateTextW()
-    self.offset = vec2(self.label.w + 5, (self.h-self.label.h)*0.5) --bottom corner of text-entry
+    local labelW = self.label and self.label.w or 0
+    local labelH = self.label and self.label.h or 0
+    self.offset = vec2(labelW + 5, (self.h - labelH) * 0.5)
     self.Xscroll = 0 -- when text is bigger than window, it can be scrolled
     
     self.sensor = Soda.Gesture{parent=self, xywhMode = CENTER}

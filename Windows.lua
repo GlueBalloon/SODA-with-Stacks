@@ -9,9 +9,10 @@ function Soda.Window:init(t)
     t.shape = t.shape or Soda.RoundedRectangle
     t.shapeArgs = t.shapeArgs or {}
     t.shapeArgs.radius = t.shapeArgs.radius or 25
-    t.label = t.label or {x=0.5, y=-15}
+    if not t.label and t.title then
+        t.label = {x=0.5, y=-15}
+    end
     t.content = t.content or ""
-    local callback = t.callback or null
     Soda.Frame.init(self, t)
     
     if t.ok then

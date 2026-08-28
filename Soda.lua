@@ -3,7 +3,7 @@ Soda.version = "0.7.4"
 SodaIsInstalled = true
 Soda.items = {} --holds all top-level ui elements (i.e. anything without a parent)
 Soda.rootBuilder = null
-Soda.backgroundColor = color(40, 40, 50)
+Soda.backgroundColor = nil
 Soda.backgroundImage = null
 Soda.beforeRebuild = null
 Soda.afterRebuild = null
@@ -11,7 +11,7 @@ Soda.pendingRebuild = false
 
 function Soda.setup(rootBuilder, backgroundImage)
     Soda.rootBuilder = rootBuilder
-    Soda.backgroundImage = backgroundImage or readImage(asset.builtin.Environments.Night_Front)
+    Soda.backgroundImage = backgroundImage
     Layout.update()
     Soda.Assets()
     Soda.baseFontSize = 20
@@ -67,7 +67,7 @@ end
 function Soda.touched(t)
     local tpos = vec2(t.x, t.y-Soda.UIoffset)
     for i = #Soda.items, 1, -1 do --test most recent item first
-        local v = Soda.items[i] 
+        local v = Soda.items[i]
         if v:touched(t, tpos) then return true end
     end
 end
@@ -90,8 +90,12 @@ end
 
 
 function Soda.drawing(breakPoint)
-    background(Soda.backgroundColor)
-    sprite(Soda.backgroundImage, WIDTH*0.5, HEIGHT*0.5, WIDTH, HEIGHT)
+    if Soda.backgroundColor then
+        background(Soda.backgroundColor)
+    end
+    if Soda.backgroundImage then 
+        sprite(Soda.backgroundImage, WIDTH*0.5, HEIGHT*0.5, WIDTH, HEIGHT)
+    end
     Soda.drawElements(breakPoint)
 end
 
