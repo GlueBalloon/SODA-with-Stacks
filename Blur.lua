@@ -81,7 +81,13 @@ function Soda.Blur:init(t)
   self.downSample = t.downSample or 0.25
   self.dirty = true
   table.insert(Soda.Blur.active, self)
-  self:rebake() -- populate self.image immediately, same as the old Blur
+  -- deliberately NOT baking here. rebake() draws the whole element tree,
+  -- and during construction that tree has no Stack layout yet (nil x/y
+  -- resolves to centred) -- plus nested ScrollShape/Gaussian setContext()
+  -- calls inside the bake reset the target to the screen mid-bake, so a
+  -- construction-time bake paints a centred, un-laid-out frame straight
+  -- onto the framebuffer. First draw() bakes instead, by which point
+  -- layout has run.
 end
 
 -- mark every live blur for a rebake on its next draw.

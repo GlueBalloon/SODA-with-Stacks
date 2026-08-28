@@ -174,7 +174,8 @@ end
 -- mid-draw (fired from the top-level sizeChanged sweep, before any
 -- translate is on the matrix), so no withCleanMatrix wrap needed here.
 function Soda.Stack:orientationChanged()
-  Soda.Frame.orientationChanged(self)
+  self:setPosition()
+  for _,v in ipairs(self.mesh) do v:setMesh() end
   self.stackDirty = true
   self:layout()
 end
@@ -295,7 +296,7 @@ function Soda.Stack:layout()
         child:orientationChanged()
       else
         child:setPosition()
-      end
+      end 
       actualMain[i] = child[mainKey]
       actualCross[i] = child[crossKey]
     end
@@ -405,7 +406,8 @@ function Soda.Grid:draw(breakPoint)
 end
 
 function Soda.Grid:orientationChanged()
-  Soda.Frame.orientationChanged(self)
+  self:setPosition()
+  for _,v in ipairs(self.mesh) do v:setMesh() end
   self.stackDirty = true
   self:layout()
 end
@@ -486,3 +488,4 @@ function Soda.Spacer(t)
   spacer.sensor.doNotInterceptTouches = true
   return spacer
 end
+
