@@ -32,7 +32,7 @@
 		<string>Windows.lua</string>
 		<string>ColorWheel.lua</string>
 		<string>Stack.lua</string>
-		<string>Sugar.lua</string>
+		<string>Standardizer.lua</string>
 		<string>.git/</string>
 		<string>.git/logs/</string>
 		<string>.git/logs/refs/</string>
@@ -92,6 +92,11 @@
 		<string>.git/objects/2a/</string>
 		<string>.git/objects/e1/</string>
 		<string>.git/objects/6b/</string>
+		<string>.git/objects/2f/</string>
+		<string>.git/objects/cb/</string>
+		<string>.git/objects/b8/</string>
+		<string>.git/objects/1d/</string>
+		<string>.git/objects/52/</string>
 		<string>.git/hooks/</string>
 		<string>.git/info/</string>
 		<string>.git/refs/</string>
