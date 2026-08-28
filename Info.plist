@@ -7,6 +7,9 @@
 	<key>Buffer Order</key>
 	<array>
 		<string>Main.lua</string>
+		<string>OverviewUI.lua</string>
+		<string>OverviewSettings .lua</string>
+		<string>OverviewUIClassic.lua</string>
 		<string>calculator.lua</string>
 		<string>Layout.lua</string>
 		<string>Soda.lua</string>
@@ -29,7 +32,6 @@
 		<string>Windows.lua</string>
 		<string>ColorWheel.lua</string>
 		<string>Stack.lua</string>
-		<string>Overview.lua</string>
 		<string>Sugar.lua</string>
 		<string>.git/</string>
 		<string>.git/logs/</string>
@@ -71,6 +73,19 @@
 		<string>.git/objects/info/</string>
 		<string>.git/objects/22/</string>
 		<string>.git/objects/9e/</string>
+		<string>.git/objects/06/</string>
+		<string>.git/objects/6c/</string>
+		<string>.git/objects/07/</string>
+		<string>.git/objects/a4/</string>
+		<string>.git/objects/6a/</string>
+		<string>.git/objects/96/</string>
+		<string>.git/objects/f1/</string>
+		<string>.git/objects/73/</string>
+		<string>.git/objects/9c/</string>
+		<string>.git/objects/d3/</string>
+		<string>.git/objects/f2/</string>
+		<string>.git/objects/e9/</string>
+		<string>.git/objects/92/</string>
 		<string>.git/hooks/</string>
 		<string>.git/info/</string>
 		<string>.git/refs/</string>

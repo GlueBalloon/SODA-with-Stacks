@@ -7,7 +7,9 @@ function setup()
   profiler.init()
   parameter.watch("Soda.focus.title")
   local bgImage = readImage(asset.builtin.Cargo_Bot.Game_Area)
+  -- change which of these is commented out to use standardized vs classic syntax
   Soda.setup(overview, bgImage)
+  --Soda.setup(overviewClassic, bgImage)
 end
 
 function draw()
