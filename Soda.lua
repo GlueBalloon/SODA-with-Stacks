@@ -53,7 +53,7 @@ function Soda.camera()
     translate(0, Soda.UIoffset)
 end
 
-function Soda.draw(breakPoint)
+function Soda.drawElements(breakPoint)
     Soda.setStyle(Soda.style.default.text)
     for i,v in ipairs(Soda.items) do --draw most recent item last
         if v.kill then
@@ -78,7 +78,7 @@ function Soda.keyboard(key)
     end
 end
 
-function Soda.sizeChanged(w, h)
+function Soda.processSizeChanged(w, h)
     if WIDTH ~= Soda.previousWIDTH then
         for i,v in ipairs(Soda.items) do
             v:orientationChanged()
@@ -92,10 +92,10 @@ end
 function Soda.drawing(breakPoint)
     background(Soda.backgroundColor)
     sprite(Soda.backgroundImage, WIDTH*0.5, HEIGHT*0.5, WIDTH, HEIGHT)
-    Soda.draw(breakPoint)
+    Soda.drawElements(breakPoint)
 end
 
-function Soda.appDraw()
+function Soda.draw()
     if Soda.pendingRebuild then Soda.rebuild() end
     pushMatrix()
     Soda.camera()
@@ -103,17 +103,9 @@ function Soda.appDraw()
     popMatrix()
 end
 
-function Soda.appTouched(touch)
-    return Soda.touched(touch)
-end
-
-function Soda.appKeyboard(key)
-    Soda.keyboard(key)
-end
-
-function Soda.appSizeChanged(w, h)
+function Soda.sizeChanged(w, h)
     Layout.update()
-    Soda.sizeChanged(w, h)
+    Soda.processSizeChanged(w, h)
     Soda.pendingRebuild = true
 end
 

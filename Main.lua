@@ -13,21 +13,21 @@ function setup()
 end
 
 function draw()
-    Soda.appDraw()
+    Soda.draw()
     profiler.draw()
 end
 
 function touched(touch)
-    if Soda.appTouched(touch) then return end
+    if Soda.touched(touch) then return end
     --your touch code goes here
 end
 
 function keyboard(key)
-    Soda.appKeyboard(key)
+    Soda.keyboard(key)
 end
 
 function sizeChanged(w, h)
-    Soda.appSizeChanged(w, h)
+    Soda.sizeChanged(w, h)
 end
 
 --measure performance:

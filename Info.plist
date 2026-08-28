@@ -7,12 +7,12 @@
 	<key>Buffer Order</key>
 	<array>
 		<string>Main.lua</string>
+		<string>Soda.lua</string>
 		<string>OverviewUI.lua</string>
 		<string>OverviewSettings .lua</string>
 		<string>OverviewUIClassic.lua</string>
 		<string>calculator.lua</string>
 		<string>Layout.lua</string>
-		<string>Soda.lua</string>
 		<string>FRAME.lua</string>
 		<string>Gesture.lua</string>
 		<string>Style.lua</string>
@@ -108,6 +108,23 @@
 		<string>.git/objects/dc/</string>
 		<string>.git/objects/82/</string>
 		<string>.git/objects/5b/</string>
+		<string>.git/objects/16/</string>
+		<string>.git/objects/d9/</string>
+		<string>.git/objects/3d/</string>
+		<string>.git/objects/ec/</string>
+		<string>.git/objects/26/</string>
+		<string>.git/objects/d6/</string>
+		<string>.git/objects/c1/</string>
+		<string>.git/objects/35/</string>
+		<string>.git/objects/2e/</string>
+		<string>.git/objects/a0/</string>
+		<string>.git/objects/85/</string>
+		<string>.git/objects/8f/</string>
+		<string>.git/objects/4a/</string>
+		<string>.git/objects/0f/</string>
+		<string>.git/objects/3e/</string>
+		<string>.git/objects/67/</string>
+		<string>.git/objects/59/</string>
 		<string>.git/hooks/</string>
 		<string>.git/info/</string>
 		<string>.git/refs/</string>
